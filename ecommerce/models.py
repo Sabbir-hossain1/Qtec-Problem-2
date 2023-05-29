@@ -35,11 +35,7 @@ class Seller(models.Model):
 
 class Image(models.Model):
     name = models.CharField(max_length=50)
-    product_image = models.ImageField(upload_to='product/')
-
-    def __str__(self):
-        return self.name
-    
+    product_image = models.ImageField(upload_to='product/')  
 
 # product Model
 class Product(models.Model):

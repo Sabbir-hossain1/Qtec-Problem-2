@@ -2,8 +2,8 @@
 <div style="width: 25%" class="p-1 col-4 col-sm-4 col-md-3 col-lg-2 my_class_for_add_product_to_card">
   <div class="border rounded-3">
     <div class="d-flex flex-center rounded-3 mb-3 p-4" style="height: 100px; width: 100%">
-      {% for image in product.image.all %}
-      <img class="mw-100" src="{{image.url}}" alt="{{image.name}}" />
+      {% for image in product.image.all %}           
+      <img class="mw-100" src="{{image.product_image.url}}" alt="{{image.name}}" style="display:block;margin:0 auto;"/>
       {% endfor %}
     </div>
 

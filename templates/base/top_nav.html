@@ -34,21 +34,80 @@
         </li>
       </ul>
 
-      <div class='input-group' style="width:30%">
-        <input class='form-control'  type="text" style="width:70%">
-        <select class="form-select" style="width:30%">
-          <option value="1">cate1</option>
-          <option value="1">cate2</option>
-          <option value="1">cate3</option>
+      <div class="input-group" style="width: 30%">
+        <input id='product_search' class="form-control" type="text" style="width: 70%" />
+        <select id="category_selector" class="form-select" style="width: 30%" onchange="category_change()">
+          {% for category in categories %}
+          <option value="{{category.id}}">{{category.name}}</option>
+          {% endfor %}
         </select>
-        
       </div>
       <form class="form">
         <div class="d-flex">
-          <input class="form-control" type="search" placeholder="Search" aria-label="Search" />
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          <input id="all_product_search" class="form-control" type="search" placeholder="Search" aria-label="Search" />
+          <button class="btn btn-outline-success my-2 my-sm-0" disabled>Search</button>
         </div>
       </form>
     </div>
   </nav>
 </div>
+
+<script>
+  function category_change() {
+    var selectElement = document.getElementById("category_selector");
+    var selectedCategoryId = selectElement.value;
+    
+    $.ajax({
+      url: "/ecommerce/category/" + selectedCategoryId + "/",
+      dataType: "json",
+      method: "get",
+
+      beforeSend: function () {
+        $("#products_container").html(
+          '<div class="d-flex justify-content-center align-align-content-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>'
+        );
+      },
+      success: function (data) {
+        $("#products_container").html(data.updated_list);
+      },
+    });
+  }
+
+  var searchInput = document.getElementById("product_search");
+  searchInput.addEventListener("keyup", (e) => {
+    e.preventDefault();
+    var selectElement = document.getElementById("category_selector");
+    var selectedCategoryId = selectElement.value;
+    var searchText = e.target.value;
+    $.ajax({
+      url: "/ecommerce/category/" + selectedCategoryId + "/products/",
+      dataType: "json",
+      method: "get",
+      data: { search_text: searchText },
+
+      success: function (data) {
+        $("#products_container").html(data.updated_list);
+      },
+    });
+  });
+
+
+  var all_product_search = document.getElementById("all_product_search");
+  all_product_search.addEventListener("keyup", (e) => {
+    e.preventDefault();  
+    var searchText = e.target.value;
+    $.ajax({
+      url: "/ecommerce/products",
+      dataType: "json",
+      method: "get",
+      data: { search_text: searchText },
+
+      success: function (data) {
+        $("#products_container").html(data.updated_list);
+      },
+    });
+  });
+
+
+
+</script>

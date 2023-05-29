@@ -1,32 +1,31 @@
-<div class="hover-scroll-y border border-right border-secondary">
+<div class="overflow-scroll border border-right border-secondary" style="height: 600px">
+  <div class="card">
+    <div class="card-body">
+      <div class="card-header">Categories</div>
+      <div class="card-body">
+        {% for category in categories %}
+        <label class="d-block m-auto">
+          <input
+            name="category"
+            class="form-checkbox mx-2"
+            type="checkbox"
+            value="{{category.id}}"
+          />{{category.name}}</label
+        >
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
   <div class="card">
     <div class="card-body">
       <div class="card-header">Brands</div>
       <div class="card-body">
-        <label> <input class="form-checkbox mx-2" type="checkbox" />ANKER</label>        
-        <label> <input class="form-checkbox mx-2" type="checkbox" />AWE</label>        
-        <label> <input class="form-checkbox mx-2" type="checkbox" />GEEOO</label>        
-        <label> <input class="form-checkbox mx-2" type="checkbox" />HAYLOU</label>        
-        <label> <input class="form-checkbox mx-2" type="checkbox" />HOCO</label>                    
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-body">
-      <div class="card-header">EARPHONE</div>
-      <div class="card-body">
-        <label> <input class="form-checkbox mx-2" type="checkbox" />NECBAND</label>        
-        <label> <input class="form-checkbox mx-2" type="checkbox" />TWS</label>        
-        <label> <input class="form-checkbox mx-2" type="checkbox" />WIRED EARPHONE</label>                           
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-body">
-      <div class="card-header">PRODUCT TYPE</div>
-      <div class="card-body">
-        <label> <input class="form-checkbox mx-2" type="checkbox" />LIFESTYLE</label>        
-        <label> <input class="form-checkbox mx-2" type="checkbox" />MOBILE PHONE ACCESSORIES</label>                           
+        {% for brand in brands %}
+        <label class="d-block m-auto">
+          <input name="brand" class="form-checkbox mx-2" type="checkbox" value="{{brand.id}}" />{{brand.name}}</label
+        >
+        {% endfor %}
       </div>
     </div>
   </div>
@@ -35,22 +34,89 @@
     <div class="card-body">
       <div class="card-header">SELLER</div>
       <div class="card-body">
-        <label> <input class="form-checkbox mx-2" type="checkbox" />DXTEL</label>        
-        <label> <input class="form-checkbox mx-2" type="checkbox" />GADGET A2ZBD</label>        
-        <label> <input class="form-checkbox mx-2" type="checkbox" />RIO INTERNATIONAL</label>                              
+        {% for seller in sellers %}
+        <label class="d-block m-auto">
+          <input name="seller" class="form-checkbox mx-2" type="checkbox" value="{{seller.id}}" />{{seller.name}}</label
+        >
+        {% endfor %}
       </div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-body">
-      <div class="card-header">WARRANTY PERIOD</div>
+      <div class="card-header">WARRANTY</div>
       <div class="card-body">
-        <label> <input class="form-checkbox mx-2" type="checkbox" />3 DAYS</label>        
-        <label> <input class="form-checkbox mx-2" type="checkbox" />1 MONTH</label>        
-        <label> <input class="form-checkbox mx-2" type="checkbox" />1 YEAR</label>                              
-        <label> <input class="form-checkbox mx-2" type="checkbox" />NO WARRANTY</label>                              
+        {% for warranty in warranties %}
+        <label class="d-block m-auto">
+          <input
+            name="warranty"
+            class="form-checkbox mx-2"
+            type="checkbox"
+            value="{{warranty.id}}"
+          />{{warranty.name}}</label
+        >
+        {% endfor %}
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  $(document).ready(function () {
+    $(".form-checkbox").on("click", function () {      
+      var categoryCheckboxes = document.getElementsByName("category");
+      var brandCheckboxes = document.getElementsByName("brand");
+      var sellerCheckboxes = document.getElementsByName("seller");
+      var warrantyCheckboxes = document.getElementsByName("warranty");
+      var selectedCategoryIds = [];
+      var selectedBrandIds = [];
+      var selectedSellerIds = [];
+      var selectedWarrantyIds = [];
+
+      // Get selected Category IDs
+      for (var i = 0; i < categoryCheckboxes.length; i++) {
+        if (categoryCheckboxes[i].checked) {
+          selectedCategoryIds.push(categoryCheckboxes[i].value);
+        }
+      }
+
+      // Get selected brand IDs
+      for (var i = 0; i < brandCheckboxes.length; i++) {
+        if (brandCheckboxes[i].checked) {
+          selectedBrandIds.push(brandCheckboxes[i].value);
+        }
+      }
+
+      // Get selected seller IDs
+      for (var i = 0; i < sellerCheckboxes.length; i++) {
+        if (sellerCheckboxes[i].checked) {
+          selectedSellerIds.push(sellerCheckboxes[i].value);
+        }
+      }
+
+      // Get selected warranty IDs
+      for (var i = 0; i < warrantyCheckboxes.length; i++) {
+        if (warrantyCheckboxes[i].checked) {
+          selectedWarrantyIds.push(warrantyCheckboxes[i].value);
+        }
+      }      
+
+      $.ajax({
+        url: "/ecommerce/checkbox-filter/",
+        dataType: "json",
+        method: "get",
+        data: { 
+          category_ids:selectedCategoryIds,
+          brand_ids: selectedBrandIds,
+          seller_ids:selectedSellerIds,
+          warranty_ids:selectedWarrantyIds,
+         },
+
+        success: function (data) {
+          $("#products_container").html(data.updated_list);
+        },
+      });
+    });
+  });
+</script>
