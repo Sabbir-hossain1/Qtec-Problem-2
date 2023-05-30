@@ -58,7 +58,7 @@
     var selectedCategoryId = selectElement.value;
     
     $.ajax({
-      url: "/ecommerce/category/" + selectedCategoryId + "/",
+      url: "/category/" + selectedCategoryId + "/",
       dataType: "json",
       method: "get",
 
@@ -80,7 +80,7 @@
     var selectedCategoryId = selectElement.value;
     var searchText = e.target.value;
     $.ajax({
-      url: "/ecommerce/category/" + selectedCategoryId + "/products/",
+      url: "/category/" + selectedCategoryId + "/products/",
       dataType: "json",
       method: "get",
       data: { search_text: searchText },
