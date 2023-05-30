@@ -97,7 +97,7 @@
     e.preventDefault();  
     var searchText = e.target.value;
     $.ajax({
-      url: "/ecommerce/products",
+      url: "/products",
       dataType: "json",
       method: "get",
       data: { search_text: searchText },

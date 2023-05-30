@@ -1,4 +1,14 @@
 <div class="overflow-scroll border border-right border-secondary" style="height: 600px">
+  
+  <div class="row my-2">
+    <div class="input-group">
+      <span class="input-group-text">Price</span>
+      <input id="min_price" type="text" aria-label="First name" class="custom_filter form-control" />
+      <span class="input-group-text">to</span>
+      <input id="max_price" type="text" aria-label="Last name" class="custom_filter form-control" />
+    </div>
+  </div>
+
   <div class="card">
     <div class="card-body">
       <div class="card-header">Categories</div>
@@ -7,7 +17,7 @@
         <label class="d-block m-auto">
           <input
             name="category"
-            class="form-checkbox mx-2"
+            class="custom_filter form-checkbox mx-2"
             type="checkbox"
             value="{{category.id}}"
           />{{category.name}}</label
@@ -23,7 +33,7 @@
       <div class="card-body">
         {% for brand in brands %}
         <label class="d-block m-auto">
-          <input name="brand" class="form-checkbox mx-2" type="checkbox" value="{{brand.id}}" />{{brand.name}}</label
+          <input name="brand" class="custom_filter form-checkbox mx-2" type="checkbox" value="{{brand.id}}" />{{brand.name}}</label
         >
         {% endfor %}
       </div>
@@ -36,7 +46,7 @@
       <div class="card-body">
         {% for seller in sellers %}
         <label class="d-block m-auto">
-          <input name="seller" class="form-checkbox mx-2" type="checkbox" value="{{seller.id}}" />{{seller.name}}</label
+          <input name="seller" class="custom_filter form-checkbox mx-2" type="checkbox" value="{{seller.id}}" />{{seller.name}}</label
         >
         {% endfor %}
       </div>
@@ -51,7 +61,7 @@
         <label class="d-block m-auto">
           <input
             name="warranty"
-            class="form-checkbox mx-2"
+            class="custom_filter form-checkbox mx-2"
             type="checkbox"
             value="{{warranty.id}}"
           />{{warranty.name}}</label
@@ -64,15 +74,22 @@
 
 <script>
   $(document).ready(function () {
-    $(".form-checkbox").on("click", function () {      
+    $(".custom_filter").on("keyup click", function () {
       var categoryCheckboxes = document.getElementsByName("category");
       var brandCheckboxes = document.getElementsByName("brand");
       var sellerCheckboxes = document.getElementsByName("seller");
       var warrantyCheckboxes = document.getElementsByName("warranty");
+
+      // get price value
+      var min_price = document.getElementById("min_price").value
+      var max_price = document.getElementById("max_price").value
+                 
       var selectedCategoryIds = [];
       var selectedBrandIds = [];
       var selectedSellerIds = [];
       var selectedWarrantyIds = [];
+
+    
 
       // Get selected Category IDs
       for (var i = 0; i < categoryCheckboxes.length; i++) {
@@ -100,18 +117,22 @@
         if (warrantyCheckboxes[i].checked) {
           selectedWarrantyIds.push(warrantyCheckboxes[i].value);
         }
-      }      
+      }
+
+      console.log(selectedWarrantyIds, selectedSellerIds,selectedBrandIds,selectedCategoryIds)
 
       $.ajax({
-        url: "/ecommerce/checkbox-filter/",
+        url: "/checkbox-filter/",
         dataType: "json",
         method: "get",
-        data: { 
-          category_ids:selectedCategoryIds,
+        data: {
+          category_ids: selectedCategoryIds,
           brand_ids: selectedBrandIds,
-          seller_ids:selectedSellerIds,
-          warranty_ids:selectedWarrantyIds,
-         },
+          seller_ids: selectedSellerIds,
+          warranty_ids: selectedWarrantyIds,
+          minimum_price:min_price,
+          maximum_price:max_price,
+        },
 
         success: function (data) {
           $("#products_container").html(data.updated_list);
